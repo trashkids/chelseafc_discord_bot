@@ -3,6 +3,9 @@ import pytz
 import requests
 from datetime import datetime, timedelta
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DISCORD_BOT_TOKEN = os.environ['DISCORD_BOT_TOKEN']
 DISCORD_CHANNEL_ID = int(os.environ['DISCORD_CHANNEL_ID'])
