@@ -8,7 +8,7 @@ DISCORD_BOT_TOKEN = os.environ['DISCORD_BOT_TOKEN']
 DISCORD_CHANNEL_ID = int(os.environ['DISCORD_CHANNEL_ID'])
 FOOTBALL_DATA_TEAM_ID = int(os.environ['FOOTBALL_DATA_TEAM_ID'])
 FOOTBALL_DATA_API_KEY = os.environ['FOOTBALL_DATA_API_KEY']
-TIMEZONE = os.environ['TIMEZONE']
+TIMEZONE = os.environ['Asia/Tokyo']
 
 client = discord.Client()
 
