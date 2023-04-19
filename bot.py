@@ -5,7 +5,6 @@ import os
 import discord
 from dotenv import load_dotenv
 import openai
-from openai.api_key import API_KEY
 
 load_dotenv()
 
@@ -14,7 +13,7 @@ intents.members = True
 
 client = discord.Client(intents=intents)
 
-openai.api_key = API_KEY
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # GPT3にテキストを送り回答を返す関数
 def generate_answer(text):
