@@ -18,7 +18,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # GPT3にテキストを送り回答を返す関数
 def generate_answer(text):
-    prompt = (f'{text}とは何ですか？')
+    prompt = text
     response = openai.Completion.create(
       engine="davinci",
       prompt=prompt,
@@ -33,7 +33,7 @@ def generate_answer(text):
 
 # 日本語判定をする関数
 def is_japanese(text):
-    regex = r'[ぁ-んァ-ン一-龥]+'
+    regex = r'[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf]+'
     return bool(re.search(regex, text))
 
 @client.event
