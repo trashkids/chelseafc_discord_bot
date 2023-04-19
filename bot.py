@@ -7,6 +7,10 @@ import re
 from dotenv import load_dotenv
 import openai
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 load_dotenv()
 
 intents = discord.Intents.default()
@@ -18,16 +22,16 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # GPT3にテキストを送り回答を返す関数
 def generate_answer(text):
-    prompt = text
+    prompt = f"ユーザーが次のように言っています: '{text}'。これに対する適切な返答は何ですか？"
     response = openai.Completion.create(
-      engine="davinci",
+      engine="text-davinci-003",
       prompt=prompt,
       temperature=0.5,
-      max_tokens=50,
+      max_tokens=2000,
       n=1,
-      stop=None,
       timeout=10,
-    )
+)
+
     answer = response.choices[0].text.strip()
     return answer
 
@@ -45,13 +49,17 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    text = message.content.replace(f'<@!{client.user.id}>', '').strip()
+    text = message.content.replace(f'<@!{client.user.id}>', '').replace(f'<@{client.user.id}>', '').strip()
 
     if not is_japanese(text):
         return
 
+    logger.info(f"User input: {text}")
     answer = generate_answer(text)
+    logger.info(f"API response: {answer}")
+
     await message.channel.send(answer)
+    logger.info(f"Bot sent message: {answer}")
 
 # 環境変数を読み込む部分の修正
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
