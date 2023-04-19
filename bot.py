@@ -4,8 +4,9 @@ import logging
 import os
 import discord
 import re
+import json
+import requests
 from dotenv import load_dotenv
-import openai
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -18,22 +19,28 @@ intents.members = True
 
 client = discord.Client(intents=intents)
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai_api_key = os.getenv('OPENAI_API_KEY')
 
-# GPT3にテキストを送り回答を返す関数
+# GPT4にテキストを送り回答を返す関数
 def generate_answer(text):
     prompt = f"ユーザーが次のように言っています: '{text}'。これに対する適切な返答は何ですか？"
-    response = openai.Completion.create(
-      engine="text-davinci-003",
-#      model="gpt-3.5-turbo",
-      prompt=prompt,
-      temperature=0.5,
-      max_tokens=2000,
-      n=1,
-      timeout=10,
-)
+    data = {
+        "engine": "gpt-4",
+        "prompt": prompt,
+        "temperature": 0.5,
+        "max_tokens": 2000,
+        "n": 1,
+        "timeout": 10,
+    }
+    headers = {
+        "Authorization": f"Bearer {openai_api_key}",
+        "Content-Type": "application/json"
+    }
 
-    answer = response.choices[0].text.strip()
+    response = requests.post("https://api.openai.com/v2/completions", headers=headers, data=json.dumps(data))
+    response_json = response.json()
+    answer = response_json['choices'][0]['text'].strip()
+
     return answer
 
 # 日本語判定をする関数
