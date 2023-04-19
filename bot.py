@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import logging
 import os
 import discord
@@ -19,13 +17,17 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 def generate_answer(text):
     prompt = (f'{text}とは何ですか？')
     response = openai.Completion.create(
-      engine="davinci",
+      engine="davinci-codex",
       prompt=prompt,
       temperature=0.5,
       max_tokens=50,
       n=1,
       stop=None,
       timeout=10,
+      model="text-davinci-002",
+      inputs={
+          "japanese_tokenization": True
+      }
     )
     answer = response.choices[0].text.strip()
     return answer
@@ -37,9 +39,6 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.author == client.user:
-        return
-
-    if message.channel.name != 'test':
         return
 
     if message.content.startswith('こんにちは'):
