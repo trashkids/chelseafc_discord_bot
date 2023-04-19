@@ -1,3 +1,22 @@
+import logging
+
+# ロガーを作成する
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# ログをファイルに出力するハンドラを作成する
+log_file = '../discord_bot.log'
+file_handler = logging.FileHandler(log_file, encoding='utf-8')
+file_handler.setLevel(logging.DEBUG)
+
+# ログのフォーマットを設定する
+formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s')
+file_handler.setFormatter(formatter)
+
+# ロガーにハンドラを追加する
+logger.addHandler(file_handler)
+
+
 import os
 import discord
 from dotenv import load_dotenv
