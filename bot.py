@@ -31,9 +31,8 @@ def generate_answer(text):
     answer = response.choices[0].text.strip()
     return answer
 
-# 日本語を含むかどうかを判定する関数
 def is_japanese(text):
-    regex = r'\p{Hiragana}|\p{Katakana}|[一-龠々]'
+    regex = r'^[\u3040-\u309f\u30a0-\u30ff\u3000-\u303f]+$'
     return bool(re.search(regex, text))
 
 @client.event
@@ -45,14 +44,11 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    text = message.content.strip()
-
-    # 日本語を含まない場合は処理をスキップ
+    text = message.content.replace(f'<@!{client.user.id}>', '')
+    text = text.replace('　', ' ').strip()
     if not is_japanese(text):
-        return
-
-    answer = generate_answer(text)
-    await message.channel.send(answer)
+        answer = generate_answer(text)
+        await message.channel.send(answer)
 
 # 環境変数を読み込む部分の修正
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
