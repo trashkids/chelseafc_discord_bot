@@ -1,27 +1,11 @@
 #!/usr/bin/python
 
 import logging
-
-# ロガーを作成する
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# ログをファイルに出力するハンドラを作成する
-log_file = '../discord_bot.log'
-file_handler = logging.FileHandler(log_file, encoding='utf-8')
-file_handler.setLevel(logging.DEBUG)
-
-# ログのフォーマットを設定する
-formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s')
-file_handler.setFormatter(formatter)
-
-# ロガーにハンドラを追加する
-logger.addHandler(file_handler)
-
-
 import os
 import discord
 from dotenv import load_dotenv
+import openai
+from openai.api_key import API_KEY
 
 load_dotenv()
 
@@ -29,6 +13,23 @@ intents = discord.Intents.default()
 intents.members = True
 
 client = discord.Client(intents=intents)
+
+openai.api_key = API_KEY
+
+# GPT3にテキストを送り回答を返す関数
+def generate_answer(text):
+    prompt = (f'{text}とは何ですか？')
+    response = openai.Completion.create(
+      engine="davinci",
+      prompt=prompt,
+      temperature=0.5,
+      max_tokens=50,
+      n=1,
+      stop=None,
+      timeout=10,
+    )
+    answer = response.choices[0].text.strip()
+    return answer
 
 @client.event
 async def on_ready():
@@ -39,12 +40,18 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    # 追加した部分
     if message.channel.name != 'test':
         return
 
     if message.content.startswith('こんにちは'):
         await message.channel.send('こんにちは')
+
+    # メンションを含むメッセージを処理する
+    if client.user in message.mentions:
+        text = message.content.replace(f'<@!{client.user.id}>', '')
+        text = text.replace('　', ' ').strip()
+        answer = generate_answer(text)
+        await message.channel.send(answer)
 
 # 環境変数を読み込む部分の修正
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
