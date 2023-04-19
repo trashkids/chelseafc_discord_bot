@@ -39,15 +39,10 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('こんにちは'):
-        await message.channel.send('こんにちは')
-
-    # メンションを含むメッセージを処理する
-    if client.user in message.mentions:
-        text = message.content.replace(f'<@!{client.user.id}>', '')
-        text = text.replace('　', ' ').strip()
-        answer = generate_answer(text)
-        await message.channel.send(answer)
+    text = message.content.replace(f'<@!{client.user.id}>', '')
+    text = text.replace('　', ' ').strip()
+    answer = generate_answer(text)
+    await message.channel.send(answer)
 
 # 環境変数を読み込む部分の修正
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
