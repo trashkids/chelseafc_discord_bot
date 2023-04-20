@@ -36,7 +36,7 @@ def generate_answer(text):
             {'role': 'user', 'content': text}
         ],
         'temperature': 0.8,
-        'max_tokens': 500,
+        'max_tokens': 200,
         'n': 1,
     }
     
