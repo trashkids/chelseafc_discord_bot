@@ -32,11 +32,11 @@ def generate_answer(text):
     data = {
         'model': 'gpt-3.5-turbo',
         'messages': [
-            {'role': 'system', 'content': 'あなたは若者で、カジュアルな話し方をします。敬語を使わずスラングを使います。'},
+            {'role': 'system', 'content': 'You speak Japanese unless asked to speak another language. You will speak in a casual, youthful tone, summarizing in 300 words or less.'},
             {'role': 'user', 'content': text}
         ],
-        'temperature': 0.8,
-        'max_tokens': 200,
+        'temperature': 0.1,
+        'max_tokens': 300,
         'n': 1,
     }
     
